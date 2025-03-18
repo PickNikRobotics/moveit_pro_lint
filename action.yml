@@ -1,0 +1,15 @@
+name: Validate Objectives
+description: Validates your MoveIt Pro objectives
+
+runs:
+    using: composite
+    steps:
+        - name: Set GitHub Path
+          run: echo "$GITHUB_ACTION_PATH" >> $GITHUB_PATH
+          shell: bash
+          env:
+              GITHUB_ACTION_PATH: ${{ github.action_path }}
+        - name: Validate objectives
+          shell: bash
+          run: |
+              validate_objectives.py
