@@ -31,10 +31,8 @@ def validate_objective(xml_file: str) -> Optional[str]:
             assert (
                 metadata_fields.find(".//Metadata[@subcategory]") is not None
             ), "Objective subcategory not found"
-            # We still support both of these kinds of description, but we need to deprecate the older one.
             assert (
-                behavior_tree.attrib.get("_description") is not None
-                or metadata_fields.find(".//Metadata[@description]") is not None
+                metadata_fields.find(".//Metadata[@description]") is not None
             ), "Objective description not found"
     except (ET.ParseError, AssertionError) as e:
         return f"Error validating {xml_file}: {str(e)}"
