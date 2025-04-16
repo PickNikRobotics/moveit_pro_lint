@@ -20,6 +20,9 @@ def validate_objective(xml_file: str) -> Optional[str]:
                 tree_nodes_model := root.find(".//TreeNodesModel")
             ) is not None, "TreeNodesModel not found"
             assert (
+                behavior_tree.attrib.get("_subtreeOnly") is None
+            ), "_subtreeOnly attribute is deprecated, please use `runnable` Metadata instead"
+            assert (
                 subtree_definition := tree_nodes_model.find("SubTree")
             ) is not None, "SubTree definition not found"
             assert (
