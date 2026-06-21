@@ -34,6 +34,17 @@ def validate_objective(xml_file: str) -> Optional[str]:
             assert (
                 metadata_fields.find(".//Metadata[@description]") is not None
             ), "Objective description not found"
+            # SubTree ports are always bidirectional, so the editor shows them as
+            # in/out. A directional <input_port>/<output_port> is hand-jammed
+            # metadata that misleads; require <inout_port> instead.
+            directional_ports = subtree_definition.findall(
+                "input_port"
+            ) + subtree_definition.findall("output_port")
+            assert not directional_ports, (
+                "SubTree ports are always bidirectional; use <inout_port> instead of "
+                "<input_port>/<output_port> for: "
+                + ", ".join(p.get("name", "<unnamed>") for p in directional_ports)
+            )
     except (ET.ParseError, AssertionError) as e:
         return f"Error validating {xml_file}: {str(e)}"
 
