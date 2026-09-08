@@ -1,30 +1,15 @@
-name: Validate MoveIt Pro repository
-description: Validates MoveIt Pro Objectives and ROS package license declarations
+name: Validate Objectives
+description: Validates your MoveIt Pro objectives
 
 runs:
-  using: composite
-  steps:
-    - name: Install lint dependencies
-      shell: bash
-      env:
-        GITHUB_ACTION_PATH: ${{ github.action_path }}
-      run: |
-        dependency_path="${RUNNER_TEMP}/moveit-pro-lint-dependencies"
-        rm -rf "${dependency_path}"
-        python3 -m pip install \
-          --disable-pip-version-check \
-          --require-hashes \
-          --requirement "${GITHUB_ACTION_PATH}/requirements.txt" \
-          --target "${dependency_path}"
-        echo "PYTHONPATH=${dependency_path}${PYTHONPATH:+:${PYTHONPATH}}" >> "${GITHUB_ENV}"
-        echo "${GITHUB_ACTION_PATH}" >> "${GITHUB_PATH}"
-    - name: Validate objectives
-      shell: bash
-      run: validate_objectives.py
-    - name: Validate package licenses
-      shell: bash
-      env:
-        GITHUB_TOKEN: ${{ github.token }}
-      run: |
-        root_license="$(python3 "${GITHUB_ACTION_PATH}/detect_repository_license.py")"
-        validate_package_licenses.py --root-license "${root_license}"
+    using: composite
+    steps:
+        - name: Set GitHub Path
+          run: echo "$GITHUB_ACTION_PATH" >> $GITHUB_PATH
+          shell: bash
+          env:
+              GITHUB_ACTION_PATH: ${{ github.action_path }}
+        - name: Validate objectives
+          shell: bash
+          run: |
+              validate_objectives.py
